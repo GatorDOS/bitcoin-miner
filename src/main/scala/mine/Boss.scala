@@ -52,7 +52,7 @@ object Boss {
     val f = new File("BitCoin.txt");
     import system.dispatcher
     system.scheduler.schedule(2.seconds, 30.seconds) {
-      implicit val timeout = Timeout(30 seconds)
+      implicit val timeout = Timeout(60 seconds)
       val future = boss ? Array(noOfZerosPrefix, length.incrementAndGet())
       future onSuccess {
         
