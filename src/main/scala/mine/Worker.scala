@@ -25,7 +25,7 @@ class Worker extends Actor{
   override def postStop(): Unit = cluster.unsubscribe(self)
   
   def receive = {
-    case num:Int => sender() ! new BitCoinMiner(num).mine
+    case noOfZeros:Array[Int] => sender() ! new BitCoinMiner(noOfZeros(0)).mine(noOfZeros(1))
     case state: CurrentClusterState => 
        state.members.filter(_.status == MemberStatus.Up) foreach register
     case MemberUp(m) => register(m)   

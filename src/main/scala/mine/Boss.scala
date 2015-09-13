@@ -22,9 +22,9 @@ class Boss extends Actor {
   var jobCounter = 0
 
   def receive = {
-    case job: Int if backends.isEmpty =>
+    case job: Array[Int] if backends.isEmpty =>
       sender() ! JobFailed("Service UnAvailable, try again later", job)
-    case job: Int =>
+    case job: Array[Int] =>
       jobCounter += 1
       backends(jobCounter % backends.size) forward job
 
@@ -38,7 +38,7 @@ class Boss extends Actor {
 }
 
 object Boss {
-  def main(args: Array[String]): Unit = {
+  def start(args: Array[String], noOfZerosPrefix:Int): Unit = {
     //Override the configuration of the port when specified as program argument
     val port = if (args.isEmpty) "0" else args(0)
     val config = ConfigFactory.parseString(s"akka.remote.netty.tcp.port=$port").
@@ -47,14 +47,13 @@ object Boss {
 
     val system = ActorSystem("ClusterSystem", config)
     val boss = system.actorOf(Props[Boss], name = "Boss")
-//    println(" Please Enter the value of k")
-    val input = 4
-    val counter = new AtomicInteger(9)
-    
+    var length = new AtomicInteger(9)
+    println("The number if zeros prefix required are " + noOfZerosPrefix)
     import system.dispatcher
     system.scheduler.schedule(2.seconds, 30.seconds) {
-      implicit val timeout = Timeout(5 seconds)
-      (boss ? input) onSuccess {//counter.incrementAndGet()
+      implicit val timeout = Timeout(30 seconds)
+      val future = boss ? Array(noOfZerosPrefix,length.incrementAndGet()) 
+      future onSuccess {
         case result:List[Any] => result.foreach { x => println("mebinjacob;" + x) }
         case result1 => println(result1)
       }

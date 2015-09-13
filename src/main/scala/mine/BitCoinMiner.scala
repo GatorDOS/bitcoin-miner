@@ -10,22 +10,22 @@ import scala.collection.mutable.ListBuffer
  *  @author mebin
  */
 case object BackendRegistration
-final case class JobFailed(reason:String, job: Int)
-class BitCoinMiner(input:Int) {
+final case class JobFailed(reason:String, job: Array[Int])
+class BitCoinMiner(noOfZeros:Int) {
 
-  def mine(): List[String] = {
+  def mine(length:Int): List[String] = {
     val md = MessageDigest.getInstance("SHA-256")
     val digest = md.digest();
     val rand = new Random()
     var randInput = ""
-    var length = input;
+//    var length = noOfZeros;
     val limit = 5
     var counter = 0
     var stringAndHashStoringMap = mutable.Map[String, Boolean]()
     var hashValues = new ListBuffer[String]()
     while (counter != limit) {
       randInput = randomString(length)
-      if (isBitCoin(randInput, input) == true) {
+      if (isBitCoin(randInput, noOfZeros) == true) {
         if(stringAndHashStoringMap.get(randInput).getOrElse(false) == false){
           hashValues += sha(randInput)
           stringAndHashStoringMap.put(randInput, true)
@@ -45,10 +45,10 @@ class BitCoinMiner(input:Int) {
     sb.toString
   }
 
-  private def isBitCoin(str: String, noOfPrefixOnes: Int): Boolean = {
+  private def isBitCoin(str: String, noOfPrefixZeros: Int): Boolean = {
     var count = 0
     val formatted = sha(str)
-    toInt(formatted.substring(0, noOfPrefixOnes)).getOrElse(-1) == 0
+    toInt(formatted.substring(0, noOfPrefixZeros)).getOrElse(-1) == 0
   }
 
   private def toInt(in: String): Option[Int] = {
