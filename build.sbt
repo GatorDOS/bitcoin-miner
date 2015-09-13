@@ -1,4 +1,4 @@
-EclipseKeys.withSource := true
+
 
 name := "BitCoinMining-Boss"
 
