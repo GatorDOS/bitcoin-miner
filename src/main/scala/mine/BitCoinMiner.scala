@@ -18,8 +18,7 @@ class BitCoinMiner(noOfZeros:Int) {
     val digest = md.digest();
     val rand = new Random()
     var randInput = ""
-//    var length = noOfZeros;
-    val limit = 5
+    val limit = 50
     var counter = 0
     var stringAndHashStoringMap = mutable.Map[String, Boolean]()
     var hashValues = new ListBuffer[String]()
