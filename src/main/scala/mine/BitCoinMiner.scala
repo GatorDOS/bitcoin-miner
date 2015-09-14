@@ -18,7 +18,7 @@ class BitCoinMiner(noOfZeros:Int) {
     val digest = md.digest();
     val rand = new Random()
     var randInput = ""
-    val limit = 50
+    val limit = 10000
     var counter = 0
     var stringAndHashStoringMap = mutable.Map[String, Boolean]()
     var hashValues = new ListBuffer[String]()
@@ -26,11 +26,12 @@ class BitCoinMiner(noOfZeros:Int) {
       randInput = randomString(length)
       if (isBitCoin(randInput, noOfZeros) == true) {
         if(stringAndHashStoringMap.get(randInput).getOrElse(false) == false){
-          hashValues += sha(randInput)
+          hashValues += randInput + ' ' + sha(randInput)
           stringAndHashStoringMap.put(randInput, true)
-          counter += 1  
+          
         }
       }
+	counter += 1  
     }
     hashValues.toList
   }
