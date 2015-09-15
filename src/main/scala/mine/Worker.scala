@@ -1,7 +1,6 @@
 package mine
 
 import com.typesafe.config.ConfigFactory
-
 import akka.actor.Actor
 import akka.actor.ActorSelection.toScala
 import akka.actor.ActorSystem
@@ -13,6 +12,7 @@ import akka.cluster.ClusterEvent.CurrentClusterState
 import akka.cluster.ClusterEvent.MemberUp
 import akka.cluster.Member
 import akka.cluster.MemberStatus
+import akka.actor.ActorRef
 
 class Worker extends Actor{
   
@@ -25,10 +25,15 @@ class Worker extends Actor{
   override def postStop(): Unit = cluster.unsubscribe(self)
   
   def receive = {
-    case noOfZeros:Array[Int] => sender() ! new BitCoinMiner(noOfZeros(0)).mine(noOfZeros(1))
+    case arrays:Array[Int] => process(sender, arrays(0), arrays(1))
     case state: CurrentClusterState => 
        state.members.filter(_.status == MemberStatus.Up) foreach register
     case MemberUp(m) => register(m)   
+  }
+  
+  def process(requestor: ActorRef, noOfPrefixOfZeros:Int, length: Int) = {
+    val list = new BitCoinMiner(noOfPrefixOfZeros).mine(length)
+    requestor ! Result(list)
   }
   
   def register(member: Member): Unit = 
