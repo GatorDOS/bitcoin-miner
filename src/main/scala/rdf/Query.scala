@@ -20,10 +20,13 @@ object Query {
 //    rtQueryProcess waitFor
     val is = rtQueryProcess.getInputStream
     val in = new BufferedReader(new InputStreamReader(rtQueryProcess.getInputStream ));
+    var lineCounter = 0
     var line: String = in.readLine()
     while (line != null) {
-      line = in.readLine()
+      lineCounter += 1
       println(line);
+      line = in.readLine()
     }
+    println("The line count is " + lineCounter)
   }
 }
