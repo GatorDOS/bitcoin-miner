@@ -16,7 +16,7 @@ object Query {
     val os = rtQueryProcess.getOutputStream
     
     os.write("SELECT  ?X ?Y ?Z WHERE { ?X <http://dummy.org/sample#9> <http://dummy.org/sample#-1> . ?Y <http://dummy.org/sample#9> <http://dummy.org/sample#-7> . ?Z <http://dummy.org/sample#9> <http://dummy.org/sample#-6> . ?X <http://dummy.org/sample#6> ?Z . ?Z <http://dummy.org/sample#4> ?Y . ?X <http://dummy.org/sample#12> ?Y}".getBytes)
-
+    rtQueryProcess.waitFor()
     val in = new BufferedReader(new InputStreamReader(rtQueryProcess.getInputStream()));
     var line: String = in.readLine()
     while (line != null) {
